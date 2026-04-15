@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox   fx:id="rootPane" 
+		alignment="CENTER" 
+		spacing="15"  
+		xmlns:fx="http://javafx.com/fxml" 
+		fx:controller="controllers.RegisterController"
+		prefWidth="1200"
+        prefHeight="700">
+
+    <Label text="Register New User"/>
+
+    <TextField fx:id="txtFullName" promptText="Enter Full Name"/>
+    <TextField fx:id="txtUsername" promptText="Enter Username"/>
+    <PasswordField fx:id="txtPassword" promptText="Enter Password"/>
+    <TextField fx:id="txtMobile" promptText="Enter Mobile Number"/>
+    <TextArea fx:id="txtAddress" promptText="Enter Address"/>
+
+    <Button text="Register" onAction="#handleRegister"/>
+    
+    <Button text="back to Login" onAction="#goBackToLogin"/>
+
+    <Label fx:id="lblMessage"/>
+
+</VBox>

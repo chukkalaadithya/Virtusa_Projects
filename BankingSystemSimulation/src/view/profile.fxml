@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="rootPane"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ProfileController"
+            prefWidth="1200"
+            prefHeight="700">
+
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+            <Label text="Profile Details"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER"
+              spacing="18"
+              style="-fx-padding: 40;">
+
+            <Label fx:id="lblFullName"
+                   style="-fx-font-size: 16px;" />
+
+            <Label fx:id="lblUsername"
+                   style="-fx-font-size: 16px;" />
+
+            <Label fx:id="lblMobile"
+                   style="-fx-font-size: 16px;" />
+
+            <Label fx:id="lblAddress"
+                   wrapText="true"
+                   style="-fx-font-size: 16px;" />
+
+            <Button text="Back"
+                    onAction="#goBack"
+                    prefWidth="120" />
+             
+            <Button text="Delete Profile"
+	            onAction="#deleteProfile"
+	            prefWidth="140"/>
+        </VBox>
+    </center>
+</BorderPane>

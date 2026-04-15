@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:id="rootPane"
+            fx:controller="controllers.UpdateController" 
+            prefWidth="800"
+            prefHeight="500">
+
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              spacing="10"
+              style="-fx-padding: 20; -fx-background-color: #f5f5f5;"> 
+            <Label text="Update Profile"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+        </HBox> 
+    </top> 
+
+    <center>
+        <VBox alignment="CENTER"
+              spacing="25"
+              style="-fx-padding: 40; ">
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Full Name" prefWidth="120" />
+                <TextField fx:id="txtFullName"  
+                           prefWidth="300  "
+                           editable="false" />
+                <Button text="Edit"
+                        onAction="#enableNameEdit" />
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Mobile" prefWidth="120" /> 
+                <TextField fx:id="txtMobile"
+                           prefWidth="300"  
+                           editable="false" />
+                <Button text="Edit"
+                        onAction="#enableMobileEdit" />
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Address" prefWidth="120" />
+                <TextField fx:id="txtAddress"
+                           prefWidth="300"
+                           editable="false" />
+                <Button text="Edit"
+                        onAction="#enableAddressEdit" />
+            </HBox>
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Password" prefWidth="120" />
+                <PasswordField fx:id="txtPassword"
+                               prefWidth="300"
+                               promptText="Enter new password" />
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Update Profile"
+                        onAction="#updateProfile"
+                        prefWidth="150" />
+
+                <Button text="Back"
+                        onAction="#goBack"
+                        prefWidth="100" />
+            </HBox>
+
+            <Label fx:id="lblMessage" />
+
+        </VBox>
+    </center>
+
+</BorderPane>

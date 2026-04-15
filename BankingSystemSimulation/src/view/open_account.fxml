@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="rootPane"
+	  xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.OpenAccountController"
+      alignment="CENTER"
+      spacing="20"
+      prefWidth="1200"
+      prefHeight="700"
+      style="-fx-padding: 30;">
+
+    <Label text="Open New Account"
+           style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+    <ComboBox fx:id="cmbAccountType"
+          promptText="Select Account Type"
+          prefWidth="250"/>
+
+    <TextField fx:id="txtInitialBalance"
+               promptText="Initial Balance"
+               prefWidth="250"/>
+
+    <Button text="Create Account"
+            onAction="#createAccount"
+            prefWidth="250"/>
+            
+    <Button text="Back to DashBoard"
+            onAction="#goBack"
+            prefWidth="250"/>
+
+    <Label fx:id="lblMessage"/>
+
+</VBox>
