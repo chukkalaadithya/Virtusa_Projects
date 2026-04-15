@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane fx:id="rootPane"
-			xmlns:fx="http://javafx.com/fxml"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.DashboardController"
             prefWidth="1200"
             prefHeight="700">
@@ -13,15 +13,22 @@
         <HBox spacing="20"
               alignment="CENTER_LEFT"
               style="-fx-padding: 15; -fx-background-color: #f5f5f5;">
+            
             <Label text="Bank Dashboard"
                    style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+
             <Pane HBox.hgrow="ALWAYS" />
 
             <MenuButton text="Profile">
                 <items>
-                    <MenuItem text="View Profile" onAction="#viewProfile"/>
-                    <MenuItem text="Update Details" onAction="#updateProfile"/>
-                    <MenuItem text="Logout" onAction="#logout"/>
+                    <MenuItem text="View Profile"
+                              onAction="#viewProfile" />
+
+                    <MenuItem text="Update Details"
+                              onAction="#updateProfile" />
+
+                    <MenuItem text="Logout"
+                              onAction="#logout" />
                 </items>
             </MenuButton>
         </HBox>
@@ -35,29 +42,39 @@
             <Label fx:id="lblWelcome"
                    style="-fx-font-size: 18px;" />
 
+            <Label text="Select Account"
+                   style="-fx-font-size: 14px;" />
+
             <ComboBox fx:id="cmbAccounts"
                       prefWidth="300"
-                      onAction="#switchAccount"/>
+                      onAction="#switchAccount" />
 
             <Label fx:id="lblBalance"
                    text="Available Balance: ₹0.00"
                    style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="Deposit" onAction="#openDepositPage"/>
-                <Button text="Withdraw" onAction="#openWithdrawPage"/>
-                <Button text="Transfer" onAction="#openTransferPage"/>
+            <HBox spacing="15"
+                  alignment="CENTER">
+                <Button text="Deposit"
+                        onAction="#openDepositPage" />
+
+                <Button text="Withdraw"
+                        onAction="#openWithdrawPage" />
+
+                <Button text="Transfer"
+                        onAction="#openTransferPage" />
             </HBox>
 
             <Button text="Transaction History"
                     onAction="#openTransactions"
-                    prefWidth="250"/>
+                    prefWidth="250" />
 
             <Button text="Open New Account"
                     onAction="#openCreateAccountPage"
-                    prefWidth="250"/>
+                    prefWidth="250" />
 
-            <Label fx:id="lblMessage"/>
+            <Label fx:id="lblMessage"
+                   style="-fx-font-size: 14px;" />
 
         </VBox>
     </center>

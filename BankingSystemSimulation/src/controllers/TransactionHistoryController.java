@@ -1,29 +1,24 @@
 package controllers;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import dao.TransactionDAO;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import models.Transaction;
+import service.GoToService;
 import util.SessionManager;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TransactionHistoryController {
 
     @FXML
     private BorderPane rootPane;
-
-    @FXML
-    private DatePicker dpFromDate;
-
-    @FXML
-    private DatePicker dpToDate;
 
     @FXML
     private ComboBox<String> cmbTransactionType;
@@ -44,13 +39,10 @@ public class TransactionHistoryController {
     private TableColumn<Transaction, Integer> colTargetAccount;
 
     @FXML
-    private TableColumn<Transaction, Object> colDate;
+    private TableColumn<Transaction, LocalDateTime> colDate;
 
-    private final TransactionDAO transactionDAO =
-            new TransactionDAO();
-
-    private ObservableList<Transaction> allTransactions =
-            FXCollections.observableArrayList();
+    private final TransactionDAO transactionDAO = new TransactionDAO();
+    private final GoToService go = new GoToService();
 
     @FXML
     public void initialize() {
@@ -60,58 +52,48 @@ public class TransactionHistoryController {
         colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         colTargetAccount.setCellValueFactory(new PropertyValueFactory<>("targetAccountId"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("transactionDate"));
-        
+
+        cmbTransactionType.getItems().clear();
         cmbTransactionType.getItems().addAll("ALL","DEPOSIT","WITHDRAW","TRANSFER");
-        cmbTransactionType.getSelectionModel().selectFirst();
-        loadTransactions();
+        cmbTransactionType.getSelectionModel().select("ALL");
+        loadTransactions("ALL");
     }
 
-    private void loadTransactions() {
+    private void loadTransactions(String selectedType) {
+        try {
+            int accountId = SessionManager.getSelectedAccountId();
+            List<Transaction> transactions =transactionDAO.getTransactionHistoryByAccountId(accountId);
 
-        List<Transaction> list = transactionDAO.getTransactionHistoryByAccountId(SessionManager.getSelectedAccountId());
-        allTransactions.setAll(list);
-        tblTransactions.setItems(allTransactions);
+            if (!"ALL".equalsIgnoreCase(selectedType)) {
+                transactions.removeIf(transaction ->!transaction.getTransactionType().equalsIgnoreCase(selectedType));
+            }
+
+            tblTransactions.setItems(FXCollections.observableArrayList(transactions));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     public void applyFilters() {
+        String selectedType = cmbTransactionType.getValue();
 
-        LocalDate fromDate = dpFromDate.getValue();
-        LocalDate toDate = dpToDate.getValue();
-        String type = cmbTransactionType.getValue();
+        if (selectedType == null || selectedType.isBlank()) {
+            selectedType = "ALL";
+        }
 
-        List<Transaction> filtered =allTransactions.stream().filter(transaction -> {
-                            boolean matchesDate = true;
-                            boolean matchesType = true;
-
-                            if (fromDate != null) {
-                                matchesDate =!transaction.getTransactionDate().toLocalDate().isBefore(fromDate);
-                            }
-
-                            if (toDate != null) {
-                                matchesDate =matchesDate &&!transaction.getTransactionDate().toLocalDate().isAfter(toDate);
-                            }
-
-                            if (!"ALL".equals(type)) {
-                                matchesType =transaction.getTransactionType().equalsIgnoreCase(type);
-                            }
-
-                            return matchesDate && matchesType;
-                        }).collect(Collectors.toList());
-        tblTransactions.setItems(FXCollections.observableArrayList(filtered));
+        loadTransactions(selectedType);
     }
 
     @FXML
     public void resetFilters() {
-        dpFromDate.setValue(null);
-        dpToDate.setValue(null);
-        cmbTransactionType.getSelectionModel().selectFirst();
-        tblTransactions.setItems(allTransactions);
+        cmbTransactionType.getSelectionModel().select("ALL");
+        loadTransactions("ALL");
     }
 
     @FXML
     public void goBack() {
-        service.GoBackService go =new service.GoBackService();
-        go.goBackService(rootPane);
+        go.goToPage("/view/dashboard.fxml","Dashboard",rootPane);
     }
 }

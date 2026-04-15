@@ -10,7 +10,6 @@
             prefHeight="700"
             style="-fx-background-color: #ffffff;">
 
-    <!-- Top Header -->
     <top>
         <HBox alignment="CENTER"
               style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
@@ -19,28 +18,23 @@
         </HBox>
     </top>
 
-    <!-- Center Content -->
     <center>
         <VBox alignment="CENTER"
               spacing="20"
               style="-fx-padding: 30;">
 
-            <!-- Selected Account -->
             <Label fx:id="lblAccountInfo"
                    text="Selected Account"
                    style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
-            <!-- Current Balance -->
             <Label fx:id="lblBalance"
                    text="Available Balance: ₹0.00"
                    style="-fx-font-size: 16px;" />
 
-            <!-- Amount -->
             <TextField fx:id="txtAmount"
                        promptText="Enter amount to withdraw"
                        prefWidth="250" />
 
-            <!-- Buttons -->
             <Button text="Withdraw"
                     prefWidth="250"
                     onAction="#withdrawAmount" />
@@ -49,7 +43,6 @@
                     prefWidth="250"
                     onAction="#goBack" />
 
-            <!-- Message -->
             <Label fx:id="lblMessage"
                    style="-fx-font-size: 14px;" />
 

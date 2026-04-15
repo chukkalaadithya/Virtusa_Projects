@@ -1,17 +1,13 @@
 package controllers;
 
-import dao.AccountDAO;
+import exceptions.ServiceLayerException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import models.Account;
-import models.User;
 import service.BankService;
+import service.GoToService;
 import util.SessionManager;
 
 public class TransferController {
@@ -24,68 +20,96 @@ public class TransferController {
 
     @FXML
     private Label lblMessage;
-    
+
     @FXML
     private BorderPane rootPane;
 
-    private BankService bankService = new BankService();
-    SessionManager session=new SessionManager();
-    private AccountDAO accountDao=new AccountDAO();
-    private int accountId = 1;
+    private final BankService bankService = new BankService();
+    private final GoToService go = new GoToService();
 
     @FXML
     public void transferMoney() {
         try {
-            int targetAccountId = Integer.parseInt(txtTargetAccount.getText());
-            double amount = Double.parseDouble(txtAmount.getText());
-            double balance=session.getSelectedAccount().getBalance();
-            Account checkId=bankService.getAccountById(targetAccountId);
-            if(targetAccountId==session.getSelectedAccount().getAccountId()) {
-            	lblMessage.setText("from and to account Id cannot be Same");
-            	return;
-            }
-            if(checkId==null) {
-            	lblMessage.setText("Enter Correct Target Account Id");
-            	return;
-            }
-            if(amount<=0) {
-            	lblMessage.setText("Enter Amount greater than Zero");
-            	return;
-            }
-            if(amount>balance) {
-            	lblMessage.setText("Insuffient Balance to Transfer Amount");
-            	return;
-            }
-            try {
-	            if(amount>0 && balance>=amount) {
-	            	double updatedBalance=balance-amount;
-	            	boolean withdrawAmount=bankService.updateBalance(session.getSelectedAccountId(),updatedBalance);
-	            	double targetUpdatedBalance=checkId.getBalance()+amount;
-	            	boolean depositAmount=bankService.updateBalance(targetAccountId,targetUpdatedBalance);
-	            	if(withdrawAmount && depositAmount) {
-	            		session.getSelectedAccount().setBalance(updatedBalance);
-	            		lblMessage.setText("Amount "+amount+" Succesfully Transfered to ***"+targetAccountId);
-	            		String str=bankService.saveTransaction(targetAccountId,"TRANSFER", amount);
-	            		System.out.println(str);
-	            	}
-	            	txtTargetAccount.clear();
-	            	txtAmount.clear();
-	            	return;
-	            }
-            }
-            catch(Exception e) {
-            	lblMessage.setText("Error in Account Tranfer");
-            	e.printStackTrace();
+            Account sourceAccount =SessionManager.getSelectedAccount();
+
+            if (sourceAccount == null) {
+                lblMessage.setText("Please select an account first");
+                return;
             }
 
+            String targetText =txtTargetAccount.getText().trim();
+
+            String amountText =txtAmount.getText().trim();
+
+            if (targetText.isEmpty() || amountText.isEmpty()) {
+
+                lblMessage.setText("Please fill all fields");
+                return;
+            }
+
+            int targetAccountId;
+            double amount;
+
+            try {
+                targetAccountId =Integer.parseInt(targetText);
+
+                amount =Double.parseDouble(amountText);
+
+            } catch (NumberFormatException e) {
+                lblMessage.setText("Enter valid details");
+                return;
+            }
+
+            if (amount <= 0) {
+                lblMessage.setText("Amount must be greater than zero");
+                return;
+            }
+
+            if (targetAccountId== sourceAccount.getAccountId()) {
+
+                lblMessage.setText("Source and target accounts cannot be same");
+                return;
+            }
+
+            Account targetAccount =bankService.getAccountById(targetAccountId);
+
+            if (targetAccount == null) {
+                lblMessage.setText("Target account not found");
+                return;
+            }
+
+            if (amount > sourceAccount.getBalance()) {
+                lblMessage.setText("Insufficient balance");
+                return;
+            }
+
+            double sourceNewBalance =sourceAccount.getBalance()- amount;
+            double targetNewBalance =targetAccount.getBalance()+ amount;
+            boolean sourceUpdated =bankService.updateBalance(sourceAccount.getAccountId(),sourceNewBalance);
+            boolean targetUpdated =bankService.updateBalance(targetAccountId,targetNewBalance);
+            if (!sourceUpdated || !targetUpdated) {
+                lblMessage.setText("Transfer failed");
+                return;
+            }
+
+            sourceAccount.setBalance(sourceNewBalance);
+            SessionManager.setSelectedAccount(sourceAccount);
+            bankService.saveTransaction(targetAccountId,"TRANSFER",amount);
+            lblMessage.setText("Amount transferred successfully");
+            txtTargetAccount.clear();
+            txtAmount.clear();
+
+        } catch (ServiceLayerException e) {
+            lblMessage.setText(e.getMessage());
+
         } catch (Exception e) {
-            lblMessage.setText("Enter valid details");
+            lblMessage.setText("Unable to process transfer");
+            e.printStackTrace();
         }
     }
 
     @FXML
     public void goBack() {
-    	service.GoBackService go=new service.GoBackService();
-    	go.goBackService(rootPane);
+        go.goToPage("/view/dashboard.fxml","Dashboard",rootPane);
     }
 }

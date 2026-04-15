@@ -1,22 +1,14 @@
 package controllers;
 
-import dao.UserDAO;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import models.User;
-import service.GoBackService;
+import service.BankService;
+import service.GoToService;
 import util.SessionManager;
 
 public class ProfileController {
-
-    @FXML
-    private BorderPane rootPane;
 
     @FXML
     private Label lblFullName;
@@ -30,25 +22,37 @@ public class ProfileController {
     @FXML
     private Label lblAddress;
 
-    private final UserDAO userDAO = new UserDAO();
+    @FXML
+    private Label lblMessage;
+
+    @FXML
+    private BorderPane rootPane;
+
+    private final BankService bankService =new BankService();
+
+    private final GoToService go =new GoToService();
 
     @FXML
     public void initialize() {
-        loadProfileDetails();
+        loadUserProfile();
     }
 
-    private void loadProfileDetails() {
+    private void loadUserProfile() {
         try {
-            int userId =SessionManager.getLoggedInUserId();
-            User user =userDAO.getUserById(userId);
+            String username =SessionManager.getUsername();
 
-            if (user != null) {
-            	
-                lblFullName.setText("Full Name: " +user.getFullName());
-                lblUsername.setText("Username: " +user.getUserName());
-                lblMobile.setText("Mobile Number: " +user.getMobileNumber());
-                lblAddress.setText("Address: " +user.getAddress());
+            if (username == null || username.isEmpty()) {
+                return;
             }
+            User user =bankService.getUserByUsername(username);
+
+            if (user == null) {
+                return;
+            }
+            lblFullName.setText("Full Name: " + user.getFullName());
+            lblUsername.setText("Username: " + user.getUserName());
+            lblMobile.setText("Mobile: " + user.getMobileNumber());
+            lblAddress.setText("Address: " + user.getAddress());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,26 +62,23 @@ public class ProfileController {
     @FXML
     public void deleteProfile() {
         try {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Delete Profile");
-            alert.setHeaderText("Confirm Delete");
-            alert.setContentText("Are you sure you want to delete your profile?");
+            String username =SessionManager.getUsername();
 
-            ButtonType result =alert.showAndWait().orElse(ButtonType.CANCEL);
+            if (username == null || username.isEmpty()) {
+                return;
+            }
 
-            if (result == ButtonType.OK) {
-                int userId =SessionManager.getLoggedInUserId();
-                boolean deleted =userDAO.deleteUser(userId);
+            User user =bankService.getUserByUsername(username);
 
-                if (deleted) {              	
-                    SessionManager.logout();
-                    FXMLLoader loader =new FXMLLoader(getClass().getResource("/view/login.fxml"));
-                    Stage stage =(Stage) rootPane.getScene().getWindow();
-                    stage.setScene(new Scene(loader.load()));
+            if (user == null) {
+                return;
+            }
 
-                    stage.setTitle("Login");
-                    stage.show();
-                }
+            boolean deleted =bankService.deleteUser(user.getUserId());
+
+            if (deleted) {
+                SessionManager.logout();
+                go.goToPage("/view/login.fxml","Login",rootPane);
             }
 
         } catch (Exception e) {
@@ -87,7 +88,6 @@ public class ProfileController {
 
     @FXML
     public void goBack() {
-        service.GoBackService go=new GoBackService();
-        go.goBackService(rootPane);
+        go.goToPage("/view/dashboard.fxml","Dashboard",rootPane);
     }
 }

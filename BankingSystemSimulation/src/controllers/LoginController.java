@@ -1,7 +1,7 @@
 package controllers;
 
-import exceptions.GoToServiceException;
 import exceptions.InvalidCredentialException;
+import exceptions.ServiceLayerException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -20,11 +20,11 @@ public class LoginController {
 
     @FXML
     private Label lblMessage;
-    
+
     @FXML
     private VBox rootPane;
 
-    private final GoToService go=new GoToService();
+    private final GoToService go = new GoToService();
     private final BankService bankService = new BankService();
 
     @FXML
@@ -32,37 +32,35 @@ public class LoginController {
         try {
             String username = txtUsername.getText().trim();
             String password = txtPassword.getText().trim();
-            
+
             if (username.isEmpty() || password.isEmpty()) {
                 lblMessage.setText("Please enter username and password");
                 return;
             }
-            	
+
             bankService.loginUser(username, password);
-            go.goToService("/view/dashboard.fxml", "DashBoard", rootPane);
-            
-        }
-        catch (InvalidCredentialException e) {
+            go.goToPage("/view/dashboard.fxml","Dashboard",rootPane);
+
+        } catch (InvalidCredentialException e) {
             lblMessage.setText(e.getMessage());
-        }
-        catch(GoToServiceException e) {
-        	lblMessage.setText(e.getMessage());
-        }
-        catch(Exception e) {
-        	lblMessage.setText("Login Failed !");
-        	e.printStackTrace();
+
+        } catch (ServiceLayerException e) {
+            lblMessage.setText(e.getMessage());
+
+        } catch (Exception e) {
+            lblMessage.setText("Login failed");
+            e.printStackTrace();
         }
     }
 
     @FXML
     public void openRegister() {
-    	try {
-	    	go.goToService("/view/register.fxml","Register",rootPane);
-    	}
-    	catch(Exception e) {
-    		lblMessage.setText(e.getMessage());
-    		e.printStackTrace();
-    	}
-    }
+        try {
+            go.goToPage("/view/register.fxml","Register",rootPane);
 
+        } catch (Exception e) {
+            lblMessage.setText("Unable to open register page");
+            e.printStackTrace();
+        }
+    }
 }

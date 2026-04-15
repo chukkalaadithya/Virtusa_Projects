@@ -1,6 +1,6 @@
 package models;
 
-public class Account{
+public class Account {
 
     private int accountId;
     private int userId;
@@ -10,14 +10,7 @@ public class Account{
     public Account() {
     }
 
-    public Account(int userId, String accountType, double balance) {
-        this.userId = userId;
-        this.accountType = accountType;
-        this.balance = balance;
-    }
-
-    public Account(int accountId, int userId, String accountType, double balance) {
-        this.accountId = accountId;
+    public Account(int userId,String accountType,double balance) {
         this.userId = userId;
         this.accountType = accountType;
         this.balance = balance;
@@ -54,7 +47,7 @@ public class Account{
     public void setBalance(double balance) {
         this.balance = balance;
     }
-    
+
     @Override
     public String toString() {
         return accountType + " - " + accountId;

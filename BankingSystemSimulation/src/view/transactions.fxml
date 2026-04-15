@@ -6,10 +6,8 @@
 <BorderPane fx:id="rootPane"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.TransactionHistoryController"
-            prefWidth="1200"
             prefHeight="700">
 
-    <!-- Top Filter Section -->
     <top>
         <VBox spacing="15"
               style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
@@ -19,26 +17,20 @@
 
             <HBox spacing="15" alignment="CENTER_LEFT">
 
-                <Label text="From:" />
-                <DatePicker fx:id="dpFromDate"/>
-
-                <Label text="To:" />
-                <DatePicker fx:id="dpToDate"/>
-
                 <Label text="Type:" />
+
                 <ComboBox fx:id="cmbTransactionType"
-                          prefWidth="180"/>
+                          prefWidth="180" />
 
                 <Button text="Apply Filters"
-                        onAction="#applyFilters"/>
+                        onAction="#applyFilters" />
 
                 <Button text="Reset"
-                        onAction="#resetFilters"/>
+                        onAction="#resetFilters" />
             </HBox>
         </VBox>
     </top>
 
-    <!-- Center Table -->
     <center>
         <TableView fx:id="tblTransactions"
                    style="-fx-padding: 20;">
@@ -46,33 +38,33 @@
             <columns>
                 <TableColumn fx:id="colTransactionId"
                              text="Transaction ID"
-                             prefWidth="180"/>
+                             prefWidth="180" />
 
                 <TableColumn fx:id="colType"
                              text="Type"
-                             prefWidth="120"/>
+                             prefWidth="120" />
 
                 <TableColumn fx:id="colAmount"
                              text="Amount"
-                             prefWidth="120"/>
+                             prefWidth="120" />
 
                 <TableColumn fx:id="colTargetAccount"
                              text="Target Account"
-                             prefWidth="150"/>
-
+                             prefWidth="150" />
+                             
                 <TableColumn fx:id="colDate"
-                             text="Date"
-                             prefWidth="180"/>
+				             text="Date"
+				             prefWidth="180"/>
+             
             </columns>
         </TableView>
     </center>
-
-    <!-- Bottom -->
+    
     <bottom>
         <HBox alignment="CENTER_RIGHT"
               style="-fx-padding: 20;">
             <Button text="Back to Dashboard"
-                    onAction="#goBack"/>
+                    onAction="#goBack" />
         </HBox>
     </bottom>
 

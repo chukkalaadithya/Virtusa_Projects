@@ -3,7 +3,7 @@ package util;
 import models.Account;
 import models.User;
 
-public class SessionManager {
+public final class SessionManager {
 
     private static User loggedInUser;
     private static Account selectedAccount;
@@ -48,5 +48,13 @@ public class SessionManager {
 
     public static int getSelectedAccountId() {
         return selectedAccount != null? selectedAccount.getAccountId(): 0;
+    }
+
+    public static boolean hasSelectedAccount() {
+        return selectedAccount != null;
+    }
+
+    public static void clearSelectedAccount() {
+        selectedAccount = null;
     }
 }

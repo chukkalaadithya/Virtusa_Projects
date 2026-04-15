@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox   fx:id="rootPane" 
-		alignment="CENTER" 
-		spacing="15"  
-		xmlns:fx="http://javafx.com/fxml" 
-		fx:controller="controllers.RegisterController"
-		prefWidth="1200"
-        prefHeight="700">
+<VBox fx:id="rootPane"
+      alignment="CENTER"
+      spacing="12"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.RegisterController">
 
-    <Label text="Register New User"/>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-    <TextField fx:id="txtFullName" promptText="Enter Full Name"/>
-    <TextField fx:id="txtUsername" promptText="Enter Username"/>
-    <PasswordField fx:id="txtPassword" promptText="Enter Password"/>
-    <TextField fx:id="txtMobile" promptText="Enter Mobile Number"/>
-    <TextArea fx:id="txtAddress" promptText="Enter Address"/>
+    <Label text="User Registration"
+           style="-fx-font-size: 22px; -fx-font-weight: bold;" />
 
-    <Button text="Register" onAction="#handleRegister"/>
-    
-    <Button text="back to Login" onAction="#goBackToLogin"/>
+    <TextField fx:id="txtFullName"
+               promptText="Enter full name" />
 
-    <Label fx:id="lblMessage"/>
+    <TextField fx:id="txtUsername"
+               promptText="Enter username" />
+
+    <PasswordField fx:id="txtPassword"
+                   promptText="Enter password" />
+
+    <TextField fx:id="txtMobile"
+               promptText="Enter mobile number" />
+
+    <TextArea fx:id="txtAddress"
+              promptText="Enter address"
+              prefRowCount="3" />
+
+    <Label fx:id="lblMessage" />
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Register"
+                onAction="#handleRegister" />
+
+        <Button text="Back to Login"
+                onAction="#goBackToLogin" />
+    </HBox>
 
 </VBox>

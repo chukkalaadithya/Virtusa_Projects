@@ -1,15 +1,14 @@
 package controllers;
 
+import exceptions.ServiceLayerException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import models.Account;
 import service.BankService;
+import service.GoToService;
 import util.SessionManager;
 
 public class OpenAccountController {
@@ -22,48 +21,85 @@ public class OpenAccountController {
 
     @FXML
     private Label lblMessage;
-    
+
     @FXML
     private VBox rootPane;
 
     private final BankService bankService = new BankService();
+    private final GoToService go = new GoToService();
 
     @FXML
     public void initialize() {
-        cmbAccountType.getItems().addAll("SAVINGS", "CURRENT");
+        cmbAccountType.getItems().clear();
+        cmbAccountType.getItems().addAll("SAVINGS","CURRENT");
     }
 
     @FXML
     public void createAccount() {
         try {
-            Account account = new Account();
-            account.setUserId(SessionManager.getLoggedInUserId());
-            String accountType=cmbAccountType.getValue();
-            account.setAccountType(accountType);
-            double balance=Double.parseDouble(txtInitialBalance.getText());
-            account.setBalance(balance);
-            boolean created = bankService.createAccount(account);
-            if (created) {
-            	Account createdAccount = bankService.getAccountByUserIdAccountType(SessionManager.getLoggedInUserId(),accountType);
-            	SessionManager.setSelectedAccount(createdAccount);
-            	System.out.println("Fetched account object: " + createdAccount);
-            	System.out.println("Fetched account id: " + createdAccount.getAccountId());
+            String accountType =cmbAccountType.getValue();
+            String balanceText =txtInitialBalance.getText().trim();
 
-            	String str = bankService.saveTransaction(createdAccount.getAccountId(),"DEPOSIT",balance);
-
-            	System.out.println(str);
-
-            } else {
-                lblMessage.setText("Account Exists! Choose Different Account");
+            if (accountType == null) {
+                lblMessage.setText("Please select account type");
+                return;
             }
 
+            if (balanceText.isEmpty()) {
+                lblMessage.setText("Please enter initial balance");
+                return;
+            }
+            double balance;
+
+            try {
+                balance = Double.parseDouble(balanceText);
+            } catch (NumberFormatException e) {
+                lblMessage.setText("Enter valid balance amount");
+                return;
+            }
+
+            if (balance < 0) {
+                lblMessage.setText("Balance cannot be negative");
+                return;
+            }
+
+            Account existingAccount =bankService.getAccountByUserIdAccountType(SessionManager.getLoggedInUserId(),accountType);
+
+            if (existingAccount != null) {
+                lblMessage.setText("This account type already exists");
+                return;
+            }
+
+            Account account = new Account();
+            account.setUserId(SessionManager.getLoggedInUserId());
+            account.setAccountType(accountType);
+            account.setBalance(balance);
+
+            boolean created =bankService.createAccount(account);
+
+            if (!created) {
+                lblMessage.setText("Account creation failed");
+                return;
+            }
+
+            Account createdAccount =bankService.getAccountByUserIdAccountType(SessionManager.getLoggedInUserId(),accountType);
+            SessionManager.setSelectedAccount(createdAccount);
+            bankService.saveTransaction(createdAccount.getAccountId(),"DEPOSIT",balance);
+            lblMessage.setText("Account created successfully");
+            txtInitialBalance.clear();
+            go.goToPage("/view/dashboard.fxml","Dashboard",rootPane);
+
+        } catch (ServiceLayerException e) {
+            lblMessage.setText(e.getMessage());
+
         } catch (Exception e) {
-            lblMessage.setText("This account type already exists");
+            lblMessage.setText("Unable to create account");
             e.printStackTrace();
         }
     }
+
+    @FXML
     public void goBack() {
-    	service.GoBackService go=new service.GoBackService();
-		go.goBackService(rootPane);
+        go.goToPage("/view/dashboard.fxml","Dashboard",rootPane);
     }
 }

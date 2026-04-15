@@ -1,6 +1,6 @@
 package models;
 
-public class User{
+public class User {
 
     private int userId;
     private String fullName;
@@ -12,7 +12,8 @@ public class User{
     public User() {
     }
 
-    public User(String fullName, String userName, String password,String mobileNumber, String address) {
+    public User(String fullName,String userName,String password,String mobileNumber,String address) {
+
         this.fullName = fullName;
         this.userName = userName;
         this.password = password;

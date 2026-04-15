@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:id="rootPane"
             xmlns:fx="http://javafx.com/fxml"
@@ -10,38 +13,35 @@
             prefHeight="700">
 
     <top>
-        <HBox alignment="CENTER_LEFT"
+        <HBox alignment="CENTER"
               style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
-            <Label text="Profile Details"
+            <Label text="Profile"
                    style="-fx-font-size: 22px; -fx-font-weight: bold;" />
         </HBox>
     </top>
 
     <center>
         <VBox alignment="CENTER"
-              spacing="18"
-              style="-fx-padding: 40;">
+              spacing="15"
+              style="-fx-padding: 30;">
 
-            <Label fx:id="lblFullName"
-                   style="-fx-font-size: 16px;" />
+            <Label fx:id="lblFullName" />
+            <Label fx:id="lblUsername" />
+            <Label fx:id="lblMobile" />
+            <Label fx:id="lblAddress" wrapText="true" />
+            <Label fx:id="lblMessage" />
 
-            <Label fx:id="lblUsername"
-                   style="-fx-font-size: 16px;" />
+            <HBox alignment="CENTER" spacing="10">
+                <Button text="Back"
+                        onAction="#goBack"
+                        prefWidth="120" />
 
-            <Label fx:id="lblMobile"
-                   style="-fx-font-size: 16px;" />
+                <Button text="Delete"
+                        onAction="#deleteProfile"
+                        prefWidth="120" />
+            </HBox>
 
-            <Label fx:id="lblAddress"
-                   wrapText="true"
-                   style="-fx-font-size: 16px;" />
-
-            <Button text="Back"
-                    onAction="#goBack"
-                    prefWidth="120" />
-             
-            <Button text="Delete Profile"
-	            onAction="#deleteProfile"
-	            prefWidth="140"/>
         </VBox>
     </center>
+
 </BorderPane>

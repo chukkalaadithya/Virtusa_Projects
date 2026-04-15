@@ -1,14 +1,12 @@
 package controllers;
 
-import dao.UserDAO;
-import exceptions.InvalidCredentialException;
+import exceptions.ServiceLayerException;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import models.User;
 import service.BankService;
 import service.GoToService;
@@ -17,7 +15,7 @@ public class RegisterController {
 
     @FXML
     private TextField txtFullName;
-    
+
     @FXML
     private VBox rootPane;
 
@@ -35,12 +33,12 @@ public class RegisterController {
 
     @FXML
     private Label lblMessage;
-    
-    private final BankService bankService=new BankService();
+
+    private final BankService bankService = new BankService();
     private final GoToService go = new GoToService();
 
     @FXML
-    public void handleRegister() {  
+    public void handleRegister() {
         try {
             String fullName = txtFullName.getText().trim();
             String userName = txtUsername.getText().trim();
@@ -48,49 +46,59 @@ public class RegisterController {
             String mobileNumber = txtMobile.getText().trim();
             String address = txtAddress.getText().trim();
 
-            if (fullName.isEmpty() || userName.isEmpty() || password.isEmpty() || mobileNumber.isEmpty() ||address.isEmpty()) {
+            if (fullName.isEmpty() || userName.isEmpty() || password.isEmpty() || mobileNumber.isEmpty() || address.isEmpty()) {
                 lblMessage.setText("Please fill all fields");
                 return;
             }
-            if(fullName.length()<=5) {
-            	lblMessage.setText("Please enter Full Name, It is too short");
-            	return;
+            if (fullName.length() < 3) {
+                lblMessage.setText("Full name is too short");
+                return;
             }
-            if(userName.length()<=5) {
-            	lblMessage.setText("UserName should be greater than 5 letters");
-            	return;
+            if (userName.length() < 5) {
+                lblMessage.setText("Username must be at least 5 characters");
+                return;
             }
-            
-            User isUserNameExists=bankService.getUserByUsername(userName);
-            if(isUserNameExists!=null) {
-            	lblMessage.setText("UserName Exists! Choose different UserName or Please Login");
-            	return;
+            if (password.length() < 6) {
+                lblMessage.setText("Password must be at least 6 characters");
+                return;
             }
-            
-            User user = new User(fullName,userName,password,mobileNumber,address);
-            boolean isRegistered = bankService.registerUser(user);
+            if (!mobileNumber.matches("\\d{10}")) {
+                lblMessage.setText("Enter valid 10-digit mobile number");
+                return;
+            }
+            User existingUser =bankService.getUserByUsername(userName);
+            if (existingUser != null) {
+                lblMessage.setText("Username already exists");
+                return;
+            }
 
-            if (isRegistered) {
-                goBackToLogin();
+            User user = new User(fullName,userName,password,mobileNumber,address
+            );
 
+            boolean registered =bankService.registerUser(user);
+
+            if (registered) {
+                lblMessage.setText("Registration successful");
+                go.goToPage("/view/login.fxml","Login",rootPane);
             } else {
                 lblMessage.setText("Registration failed");
             }
 
-        }
-        catch (Exception e) {
-            lblMessage.setText("Something went wrong!");
+        } catch (ServiceLayerException e) {
+            lblMessage.setText(e.getMessage());
+
+        } catch (Exception e) {
+            lblMessage.setText("Something went wrong");
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     public void goBackToLogin() {
-    	try {
-            go.goToService("/view/login.fxml", "Login",rootPane);
-
+        try {
+            go.goToPage("/view/login.fxml","Login",rootPane);
         } catch (Exception e) {
-            lblMessage.setText(e.getMessage());
+            lblMessage.setText("Unable to open login page");
             e.printStackTrace();
         }
     }
