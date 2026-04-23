@@ -113,8 +113,8 @@ while True:
             else:
                 print(" Deletion cancelled.")
 
-        except Exception as e:
-            print("Error while deleting:", e)
+        except Exception as e:  
+            print("Error while deleting:", e)  
 
     elif choice == "5":
         month = input("Enter month (YYYY-MM): ")
