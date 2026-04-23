@@ -13,16 +13,9 @@ public class GoToService {
             Parent rootPane) {
 
         try {
-            Stage stage =
-                    (Stage) rootPane.getScene().getWindow();
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(path)
-                    );
-
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Scene scene = new Scene(loader.load());
-
             stage.setScene(scene);
             stage.setTitle(title);
             stage.show();
