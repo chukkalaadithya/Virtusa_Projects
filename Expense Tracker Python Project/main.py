@@ -1,13 +1,18 @@
-from expense_manager import *
-from analytics import *
+from expense_manager import (
+    add_expense,
+    get_all_expenses,
+    delete_expense,
+    edit_expense
+)
+from analytics import category_summary, show_advanced_chart, monthly_summary
 from config import VALID_CATEGORIES
-from utils import *
+from utils import get_valid_date, get_valid_amount, handle_category
 
 
-def menu():
+def show_menu():
     print("\n====== Smart Expense Tracker ======")
     print("1. Add Transaction")
-    print("2. View Transactions")  
+    print("2. View Transactions")
     print("3. Edit Transaction")
     print("4. Delete Transaction")
     print("5. Monthly Summary")
@@ -15,7 +20,7 @@ def menu():
     print("7. Exit")
 
 
-def display(data):
+def display_expenses(data):
     if not data:
         print("\nNo transactions found.")
         return
@@ -25,90 +30,112 @@ def display(data):
     print("-" * 70)
 
     for i, e in enumerate(data, 1):
-        print(f"{i:<3}| {e['date']:<10} | {e['category']:<10} | ₹{e['amount']:<8} | {e['description']}")
+        print(f"{i:<3}| {e['date']:<10} | {e['category']:<10} | ₹{e['amount']:.2f} | {e['description']}")
 
 
 while True:
-    menu()
-    ch = input("\nSelect an option: ").strip()
+    show_menu()
+    choice = input("\nSelect an option: ").strip()
 
-    if ch == "1":
+    if choice == "1":
         try:
             print("\n--- Add Transaction ---")
 
             date = get_valid_date()
             category = handle_category(VALID_CATEGORIES)
             amount = get_valid_amount()
-            desc = input("Enter description: ")
+            description = input("Enter description: ")
 
             confirm = input("Save this transaction? (y/n): ").lower()
             if confirm == "y":
-                add_expense(date, category, amount, desc)
+                add_expense(date, category, amount, description)
                 print(" Transaction added successfully.")
             else:
                 print(" Transaction cancelled.")
 
-        except:
-            print(" Operation cancelled.")
+        except Exception as e:
+            print("↩ Operation cancelled:", e)
 
-    elif ch == "2":
-        display(get_all_expenses())
+    elif choice == "2":
+        display_expenses(get_all_expenses())
 
-    elif ch == "3":
+    elif choice == "3":
         data = get_all_expenses()
-        display(data)
+        display_expenses(data)
 
         try:
-            idx = int(input("Enter transaction number to edit: ")) - 1
+            idx_input = input("Enter transaction number to edit: ")
+
+            if not idx_input.isdigit():
+                print(" Invalid input")
+                continue
+
+            idx = int(idx_input) - 1
 
             new_amount = get_valid_amount()
             new_category = handle_category(VALID_CATEGORIES)
 
             confirm = input("Confirm update? (y/n): ").lower()
             if confirm == "y":
-                if edit_expense(idx, {"amount": new_amount, "category": new_category}):
-                    print(" Transaction updated.")
+                if edit_expense(idx, {
+                    "amount": new_amount,
+                    "category": new_category
+                }):
+                    print(" Transaction updated successfully.")
                 else:
-                    print(" Invalid selection.")
+                    print(" Invalid transaction number.")
             else:
                 print(" Update cancelled.")
 
-        except:
-            print("Error while updating.")
+        except Exception as e:
+            print("Error while updating:", e)
 
-    elif ch == "4":
+    elif choice == "4":
         data = get_all_expenses()
-        display(data)
+        display_expenses(data)
 
         try:
-            idx = int(input("Enter transaction number to delete: ")) - 1
+            idx_input = input("Enter transaction number to delete: ")
 
-            confirm = input("Are you sure? (y/n): ").lower()
+            if not idx_input.isdigit():
+                print(" Invalid input")
+                continue
+
+            idx = int(idx_input) - 1
+
+            confirm = input("Are you sure you want to delete? (y/n): ").lower()
             if confirm == "y":
                 removed = delete_expense(idx)
-                print(f"Deleted: {removed}" if removed else " Invalid selection.")
+                if removed:
+                    print(f" Deleted: {removed}")
+                else:
+                    print(" Invalid transaction number.")
             else:
-                print("Deletion cancelled.")
+                print(" Deletion cancelled.")
 
-        except:
-            print("Error while deleting.")
+        except Exception as e:
+            print("Error while deleting:", e)
 
-    elif ch == "5":
+    elif choice == "5":
         month = input("Enter month (YYYY-MM): ")
-        total, avg = monthly_summary(get_all_expenses(), month)
+        data = get_all_expenses()
 
-        print(f"\nMonthly Summary ({month})")
+        total, avg = monthly_summary(data, month)
+
+        print(f"\n Monthly Summary ({month})")
         print(f"Total Expense: ₹{total}")
         print(f"Average per day: ₹{round(avg, 2)}")
 
-    elif ch == "6":
+    elif choice == "6":
         month = input("Enter month (YYYY-MM): ")
-        summary = category_summary(get_all_expenses(), month)
+        data = get_all_expenses()
+
+        summary = category_summary(data, month)
         show_advanced_chart(summary, month)
 
-    elif ch == "7":
-        print("Exiting... Goodbye")
+    elif choice == "7":
+        print("Exiting... Goodbye 👋")
         break
 
     else:
-        print("Invalid option. Please try again.")
+        print("Invalid option. Please choose between 1–7.")
