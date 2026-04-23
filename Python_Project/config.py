@@ -1,0 +1,1 @@
+VALID_CATEGORIES = ["Food", "Travel", "Bills", "Shopping", "Other"]
