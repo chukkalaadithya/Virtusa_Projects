@@ -7,7 +7,7 @@ from utils import *
 def menu():
     print("\n====== Smart Expense Tracker ======")
     print("1. Add Transaction")
-    print("2. View Transactions")
+    print("2. View Transactions")  
     print("3. Edit Transaction")
     print("4. Delete Transaction")
     print("5. Monthly Summary")
@@ -49,7 +49,7 @@ while True:
                 print(" Transaction cancelled.")
 
         except:
-            print("↩ Operation cancelled.")
+            print(" Operation cancelled.")
 
     elif ch == "2":
         display(get_all_expenses())
