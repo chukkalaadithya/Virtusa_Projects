@@ -5,9 +5,9 @@ from expense_manager import (
     edit_expense
 )
 from analytics import category_summary, show_advanced_chart, monthly_summary
-from config import VALID_CATEGORIES
 from utils import get_valid_date, get_valid_amount, handle_category
 
+VALID_CATEGORIES = ["Food", "Travel", "Bills", "Shopping", "Other"]
 
 def show_menu():
     print("\n====== Smart Expense Tracker ======")
