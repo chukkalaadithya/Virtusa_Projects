@@ -1,4 +1,4 @@
-from storage import load_data, save_data
+from utils import load_data, save_data
 
 def add_expense(date, category, amount, description):
     data = load_data()
