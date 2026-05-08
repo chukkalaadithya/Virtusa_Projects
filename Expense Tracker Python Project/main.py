@@ -1,9 +1,4 @@
-from expense_manager import (
-    add_expense,
-    get_all_expenses,
-    delete_expense,
-    edit_expense
-)
+from expense_manager import *
 from analytics import category_summary, show_advanced_chart, monthly_summary
 from utils import get_valid_date, get_valid_amount, handle_category
 
