@@ -1,4 +1,26 @@
-from utils import load_data, save_data
+import json
+import os
+
+FILE_NAME = "data.json"
+
+def load_data():
+    if not os.path.exists(FILE_NAME):
+        return []
+    try:
+        with open(FILE_NAME, "r") as f:
+            return json.load(f)
+    except:
+        return []
+
+def save_data(data):
+    with open(FILE_NAME, "w") as f:
+        json.dump(data, f, indent=4)
+        
+def check_exit(value):
+    if value.lower() in ["exit", "cancel"]:
+        print("Cancelled, returning to menu...")
+        raise KeyboardInterrupt
+        
 
 def add_expense(date, category, amount, description):
     data = load_data()
