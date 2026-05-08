@@ -15,12 +15,6 @@ def load_data():
 def save_data(data):
     with open(FILE_NAME, "w") as f:
         json.dump(data, f, indent=4)
-        
-def check_exit(value):
-    if value.lower() in ["exit", "cancel"]:
-        print("Cancelled, returning to menu...")
-        raise KeyboardInterrupt
-        
 
 def add_expense(date, category, amount, description):
     data = load_data()
