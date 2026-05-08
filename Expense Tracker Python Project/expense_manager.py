@@ -1,5 +1,4 @@
 import json
-import os
 
 FILE_NAME = "data.json"
 
