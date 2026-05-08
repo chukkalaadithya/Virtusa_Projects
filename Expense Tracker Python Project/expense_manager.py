@@ -3,8 +3,8 @@ import json
 FILE_NAME = "data.json"
 
 def load_data():
-        with open(FILE_NAME, "r") as f:
-            return json.load(f)
+    with open(FILE_NAME, "r") as f:
+        return json.load(f)
 
 def save_data(data):
     with open(FILE_NAME, "w") as f:
